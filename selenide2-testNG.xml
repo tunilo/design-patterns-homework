@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Selenide2 Suite" parallel="tests" thread-count="3">
+    <listeners>
+        <listener class-name="ge.tbc.testautomation.listeners.CustomSuiteListener"/>
+        <listener class-name="ge.tbc.testautomation.listeners.CustomTestListener"/>
+        <listener class-name="ge.tbc.testautomation.listeners.CustomReportListener"/>
+        <listener class-name="ge.tbc.testautomation.listeners.TestListenerWithScreenshot"/>
+    </listeners>
+    <test name="ChromeTest">
+        <parameter name="browserType" value="chrome"/>
+        <classes>
+
+            <class name="ge.tbc.testautomation.tests.SelenideTests2">
+
+            </class>
+        </classes>
+    </test>
+
+    <test name="firefoxTest">
+        <parameter name="browserType" value="firefox"/>
+        <classes>
+            <class name="ge.tbc.testautomation.tests.SelenideTests2">
+
+            </class>
+        </classes>
+    </test>
+    <test name="edge">
+        <parameter name="browserType" value="edge"/>
+        <classes>
+            <class name="ge.tbc.testautomation.tests.SelenideTests2">
+
+            </class>
+        </classes>
+    </test>
+</suite>
