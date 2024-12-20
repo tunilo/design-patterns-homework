@@ -9,12 +9,14 @@ import ge.tbc.testautomation.pages.CommonPage;
 import ge.tbc.testautomation.pages.PricingPage;
 import ge.tbc.testautomation.steps.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.qameta.allure.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import static com.codeborne.selenide.Selenide.*;
-
+@Epic("UI Validation")
+@Feature("End-to-End Functionality Testing")
 public class SelenideTests2 {
     PricingSteps pricingSteps;
     PricingPage pricingPage;
@@ -35,7 +37,10 @@ public class SelenideTests2 {
         Faker faker;
     }
 
-    @Test
+    @Story("Validate design and hover effects for demos page")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("This test validates design elements and hover effects on the demos page.")
+    @Test(description = "Validate design and hover effects on demos page")
     public void validateDemosDesign() {
         commonSteps.openPage(Constants.DEMOS_URL);
         pricingSteps.navigateToWebSection()
@@ -45,7 +50,10 @@ public class SelenideTests2 {
                 .validateStickyNavAndActiveLinks();
     }
 
-    @Test
+    @Story("Validate order mechanics for pricing page")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("This test validates order mechanics, including prices and discounts, for the pricing page.")
+    @Test(description = "Validate order mechanics on pricing page")
     public void validateOrderMechanics() {
        CommonSteps.openPage(Constants.DEMOS_URL);
         commonSteps.click(commonPage.pricingLink);
@@ -56,23 +64,23 @@ public class SelenideTests2 {
                 .dismissPopup(Constants.CLOSE_MODAL_XPATH);
 
         double unitPrice = pricingSteps.fetchPrice($x(Constants.UNIT_PRICE_XPATH));
-        pricingSteps.validatePrices(displayedPrice, unitPrice);
-
-        pricingSteps.selectDropdownOption(Constants.DROPDOWN_BUTTON_XPATH, Constants.DROPDOWN_POPUP_XPATH, Constants.NUM);
+        pricingSteps.validatePrices(displayedPrice, unitPrice)
+        .selectDropdownOption(Constants.DROPDOWN_BUTTON_XPATH, Constants.DROPDOWN_POPUP_XPATH, Constants.NUM);
 
         ElementsCollection licenseEntries = $$x(Constants.LICENSE_ENTRIES_XPATH);
         int discount = pricingSteps.fetchDiscount(Constants.LICENSE_ENTRIES_XPATH, Constants.TARGET_NUMBER);
 
         double expectedPrice = (unitPrice * Constants.TARGET_NUMBER) * (100 - discount) / 100.0;
-        pricingSteps.validateTotalPrice(pricingPage.totalPriceElement, expectedPrice);
-
-        pricingSteps.selectDropdownOption(Constants.DROPDOWN_BUTTON_YERS, Constants.POPUP_XPATH, Constants.TARGET_OPTION);
-
-        pricingSteps.fillUserForm(faker, "Georgia");
+        pricingSteps.validateTotalPrice(pricingPage.totalPriceElement, expectedPrice)
+                .selectDropdownOption(Constants.DROPDOWN_BUTTON_YERS, Constants.POPUP_XPATH, Constants.TARGET_OPTION)
+        .fillUserForm(faker, "Georgia");
 
     }
 
-    @Test
+    @Story("Validate chained locators on books page")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("This test uses chained locators to filter books and validates their attributes.")
+    @Test(description = "Validate chained locators on books page")
     public void chainedLocatorsTest() {
         open("https://demoqa.com/books");
         ElementsCollection filteredBooks = booksSteps.filterBooksBy("O'Reilly Media", "Javascript");
@@ -80,7 +88,10 @@ public class SelenideTests2 {
                 .validateBookImagesHaveValidSrc(filteredBooks);
     }
 
-    @Test
+    @Story("Validate data consistency using soft assertions")
+    @Severity(SeverityLevel.MINOR)
+    @Description("This test validates filtered book count and titles using soft assertions.")
+    @Test(description = "Validate books data consistency with soft assertions")
     public void softAssertTest() {
         open("https://demoqa.com/books");
         SoftAssert softAssert = new SoftAssert();

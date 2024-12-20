@@ -6,6 +6,7 @@ import com.github.javafaker.Faker;
 import ge.tbc.testautomation.data.Constants;
 import ge.tbc.testautomation.pages.PricingPage;
 import ge.tbc.testautomation.utils.TestUtils;
+import io.qameta.allure.Step;
 import org.testng.Assert;
 
 import java.time.Duration;
@@ -19,35 +20,39 @@ import static org.testng.Assert.assertEquals;
 public class PricingSteps extends CommonSteps{
     PricingPage pricingPage = new PricingPage();
 
+    @Step("Validate that bundle is not supported")
     public PricingSteps validateNotSupported(SelenideElement bundle){
         bundle.shouldNotHave(Condition.exist);
 
         return this;
     }
 
+    @Step("Validate that bundle is supported")
     public PricingSteps validateSupported(SelenideElement bundle){
         bundle.shouldHave(Condition.exist);
         return this;
     }
-
+    @Step("Validate visibility of the element")
     public PricingSteps validateVisibility(SelenideElement bundle) {
 
         bundle
                 .shouldBe(visible);
         return this;
     }
+    @Step("Validate dot presence in row: {row} at column")
     public PricingSteps validateDotPresence(SelenideElement row, int columnIndex) {
         row.$x("./td[" + columnIndex + "]//span[@class='dot']")
                 .scrollTo()
                 .shouldBe(Condition.exist);
         return this;
     }
+    @Step("Validate dot Absence in row: {row} at column")
     public PricingSteps validateDotAbsence(SelenideElement row, int columnIndex) {
         row.$x("./td[" + columnIndex + "]//span[@class='dot']")
                 .shouldNot(Condition.exist);
         return this;
     }
-
+    @Step("Find column index for header")
     public int findColumnIndex(String columnHeaderText) {
         return ((Long) executeJavaScript(
                 "return document.evaluate(" +
@@ -55,7 +60,7 @@ public class PricingSteps extends CommonSteps{
                         "document, null, XPathResult.NUMBER_TYPE, null).numberValue;"))
                 .intValue();
     }
-
+    @Step("Validate text:  is present in row column {columnIndex}")
     public PricingSteps validateTextInCell(SelenideElement row, int columnIndex, String expectedText) {
         row.$x("./td[" + columnIndex + "]//p[contains(., '" + expectedText + "')]")
                 .scrollTo()
@@ -63,15 +68,18 @@ public class PricingSteps extends CommonSteps{
         return this;
     }
 
+    @Step("Validate text: is absent in row column {columnIndex}")
     public PricingSteps validateTextAbsenceInCell(SelenideElement row, int columnIndex, String text) {
         row.$x("./td[" + columnIndex + "]//p[contains(., '" + text + "')]")
                 .shouldNot(Condition.exist);
         return this;
     }
+    @Step("Hover on offer element")
     public PricingSteps hoverOnOffer(SelenideElement offerElement) {
         offerElement.hover();
         return this;
     }
+    @Step("Validate image visibility")
     public PricingSteps validateImageVisibility(SelenideElement imageElement, boolean shouldBeVisible) {
         if (shouldBeVisible) {
             imageElement.shouldBe(visible);
@@ -80,10 +88,12 @@ public class PricingSteps extends CommonSteps{
         }
         return this;
     }
+    @Step("Validate dropdown text")
     public PricingSteps validateDropdownText(SelenideElement dropdownElement, String expectedText) {
         dropdownElement.shouldHave(Condition.text(expectedText));
         return this;
     }
+    @Step("Validate price")
     public PricingSteps validatePrice(SelenideElement priceElement, String expectedPrice) {
         priceElement.shouldHave(Condition.text(expectedPrice));
         return this;
@@ -98,10 +108,12 @@ public class PricingSteps extends CommonSteps{
     public int getUltimateColumnIndex() {
         return findColumnIndex(Constants.DEVCRAFT_ULTIMATE);
     }
+    @Step("Navigate to the web section")
     public PricingSteps navigateToWebSection() {
         pricingPage.webSectionLink.click();
         return this;
     }
+    @Step("Validate web cards hover effect with expected color")
     public PricingSteps validateWebCardsHoverEffect(String expectedColor) {
         for (SelenideElement card : pricingPage.webCards) {
             card.hover();
@@ -109,6 +121,8 @@ public class PricingSteps extends CommonSteps{
         }
         return this;
     }
+    @Step("Validate Kendo UI card contains link")
+
     public PricingSteps validateKendoUiCardLink(String expectedLinkText) {
         pricingPage.webHeader.scrollTo();
 
@@ -124,6 +138,7 @@ public class PricingSteps extends CommonSteps{
 
         return this;
     }
+    @Step("Fetch Microsoft Store cards")
     public List<SelenideElement> getMicrosoftStoreCards() {
         pricingPage.desktopSectionLink.click();
         List<SelenideElement> microsoftCards = new ArrayList<>();
@@ -134,6 +149,7 @@ public class PricingSteps extends CommonSteps{
         }
         return microsoftCards;
     }
+    @Step("Validate Xamarin links")
     public PricingSteps validateXamarinLinks() {
         pricingPage.mobileSectionLink.click();
 
@@ -143,6 +159,7 @@ public class PricingSteps extends CommonSteps{
 
         return this;
     }
+    @Step("Validate sticky navigation and active links")
     public PricingSteps validateStickyNavAndActiveLinks() {
         pricingPage.navSection.shouldHave(Condition.cssClass("is-fixed"));
 
@@ -176,10 +193,12 @@ public class PricingSteps extends CommonSteps{
         return this;
     }
 
+    @Step("Fetch the price from the element")
     public double getPrice(SelenideElement priceElement) {
         String priceText = priceElement.text().replaceAll("[^\\d.]", "");
         return Double.parseDouble(priceText);
     }
+    @Step("Fetch price value and trim extra spaces")
     public double fetchPrice(SelenideElement priceElement) {
         String priceText = priceElement.text()
                 .replaceAll("[^\\d.]", "")
@@ -188,23 +207,27 @@ public class PricingSteps extends CommonSteps{
     }
 
 
+    @Step("Click 'Buy Now' on the element")
     public PricingSteps clickBuyNow(SelenideElement buyNowElement) {
         executeJavaScript("arguments[0].click();", buyNowElement);
         return this;
     }
 
+    @Step("Dismiss popup with XPath")
     public PricingSteps dismissPopup(String closePopupXPath) {
         $x(closePopupXPath).shouldBe(Condition.visible).click();
         return this;
     }
 
 
+    @Step("Validate expected price equals actual price: {actualPrice}")
     public PricingSteps validatePrices(double expectedPrice, double actualPrice) {
         assertEquals(expectedPrice, actualPrice, "Prices do not match!");
         return this;
     }
 
 
+    @Step("Select dropdown option")
     public PricingSteps selectDropdownOption(String dropdownButtonXPath, String popupXPath, String optionText) {
         SelenideElement dropdown = $x(dropdownButtonXPath);
         executeJavaScript("arguments[0].click();", dropdown);
@@ -214,6 +237,7 @@ public class PricingSteps extends CommonSteps{
         return this;
     }
 
+    @Step("Fetch discount based on target number")
     public int fetchDiscount(String licenseEntriesXPath, int targetNumber) {
         ElementsCollection licenseEntries = $$x(licenseEntriesXPath);
         for (SelenideElement entry : licenseEntries) {
@@ -226,6 +250,7 @@ public class PricingSteps extends CommonSteps{
         return 0;
     }
 
+    @Step("Validate total price")
     public PricingSteps validateTotalPrice(SelenideElement totalPriceElement, double expectedTotal) {
         double actualTotal = getPrice(totalPriceElement);
         double roundedExpected = Math.round(expectedTotal * 100.0) / 100.0;
@@ -238,12 +263,14 @@ public class PricingSteps extends CommonSteps{
         return this;
     }
 
+    @Step("Validate tooltip discounts")
     public PricingSteps validateSubtotal(SelenideElement subtotalElement, double expectedSubtotal) {
         double actualSubtotal = fetchPrice(subtotalElement);
         assertEquals(expectedSubtotal, actualSubtotal, "Subtotal mismatch!");
         return this;
     }
 
+    @Step("Fill user form with country")
     public PricingSteps validateTooltipDiscounts(SelenideElement tooltipIcon, SelenideElement tooltipContent, double expectedLicenseDiscount, double expectedSupportDiscount) {
         tooltipIcon.scrollTo().hover();
         tooltipContent.shouldBe(Condition.visible);
